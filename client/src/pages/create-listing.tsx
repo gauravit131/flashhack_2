@@ -9,17 +9,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { MapPin } from "lucide-react";
 
 export default function CreateListing() {
   const [, setLocation] = useLocation();
-  
+
   const form = useForm<InsertListing>({
     resolver: zodResolver(insertListingSchema),
     defaultValues: {
       title: "",
       description: "",
       quantity: "",
-      location: "",
+      locality: "",
+      city: "",
+      state: "",
+      pincode: "",
     },
   });
 
@@ -35,70 +39,122 @@ export default function CreateListing() {
   });
 
   return (
-    <div className="container max-w-lg py-8">
-      <Card>
+    <div className="container max-w-2xl py-8">
+      <Card className="border-2">
         <CardHeader>
-          <CardTitle>Create Food Listing</CardTitle>
+          <div className="flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-primary" />
+            <CardTitle>Create Food Listing</CardTitle>
+          </div>
           <CardDescription>Share details about the food you want to donate</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit((data) => createMutation.mutate(data))} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., Fresh Vegetables from Local Market" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Describe the food items and their condition"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="e.g., 5 kg or 20 meals" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pickup Location</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Enter the pickup address" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="e.g., Fresh Vegetables from Local Market" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Describe the food items and their condition"
+                          className="min-h-[100px]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="e.g., 5 kg or 20 meals" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="border rounded-lg p-4 space-y-4">
+                <h3 className="font-medium text-sm text-muted-foreground">Pickup Location</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="locality"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Locality/Area</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter locality or area" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter city name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter state name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="pincode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pincode</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter 6-digit pincode" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
               <Button type="submit" className="w-full" disabled={createMutation.isPending}>
                 Create Listing
               </Button>

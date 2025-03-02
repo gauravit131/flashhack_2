@@ -4,17 +4,22 @@ import createMemoryStore from "memorystore";
 
 const MemoryStore = createMemoryStore(session);
 
+type SortKey = "time" | "quantity";
+type SortOrder = "asc" | "desc";
+
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getUserCount(): Promise<number>;
   createListing(listing: InsertListing & { createdBy: number }): Promise<Listing>;
   getListing(id: number): Promise<Listing | undefined>;
-  getActiveListings(): Promise<Listing[]>;
+  getActiveListings(sort?: { key: SortKey; order: SortOrder }): Promise<Listing[]>;
   acceptListing(id: number, acceptedBy: number): Promise<Listing | undefined>;
   updateListingStatus(id: number, status: "expired"): Promise<void>;
   getListingsByUser(userId: number): Promise<Listing[]>;
   getAcceptedListings(ngoId: number): Promise<Listing[]>;
+  cleanExpiredListings(): Promise<void>;
   sessionStore: session.Store;
 }
 
@@ -33,6 +38,9 @@ export class MemStorage implements IStorage {
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
+
+    // Run cleanup every minute
+    setInterval(() => this.cleanExpiredListings(), 60000);
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -52,6 +60,10 @@ export class MemStorage implements IStorage {
     return user;
   }
 
+  async getUserCount(): Promise<number> {
+    return this.users.size;
+  }
+
   async createListing(listing: InsertListing & { createdBy: number }): Promise<Listing> {
     const id = this.currentListingId++;
     const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
@@ -62,6 +74,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       expiresAt,
       acceptedBy: null,
+      acceptedAt: null,
     };
     this.listings.set(id, newListing);
     return newListing;
@@ -71,10 +84,25 @@ export class MemStorage implements IStorage {
     return this.listings.get(id);
   }
 
-  async getActiveListings(): Promise<Listing[]> {
-    return Array.from(this.listings.values()).filter(
-      (listing) => listing.status === "available" && listing.expiresAt > new Date()
-    );
+  async getActiveListings(sort?: { key: SortKey; order: SortOrder }): Promise<Listing[]> {
+    const now = new Date();
+    const activeListings = Array.from(this.listings.values())
+      .filter(listing => listing.status === "available" && listing.expiresAt > now);
+
+    if (!sort) return activeListings;
+
+    return activeListings.sort((a, b) => {
+      if (sort.key === "time") {
+        return sort.order === "asc" 
+          ? a.createdAt.getTime() - b.createdAt.getTime()
+          : b.createdAt.getTime() - a.createdAt.getTime();
+      } else {
+        // Assuming quantity is stored as "X kg" or "X meals"
+        const qtyA = parseInt(a.quantity.split(" ")[0]) || 0;
+        const qtyB = parseInt(b.quantity.split(" ")[0]) || 0;
+        return sort.order === "asc" ? qtyA - qtyB : qtyB - qtyA;
+      }
+    });
   }
 
   async acceptListing(id: number, acceptedBy: number): Promise<Listing | undefined> {
@@ -85,6 +113,7 @@ export class MemStorage implements IStorage {
       ...listing,
       status: "accepted",
       acceptedBy,
+      acceptedAt: new Date(),
     };
     this.listings.set(id, updatedListing);
     return updatedListing;
@@ -98,15 +127,24 @@ export class MemStorage implements IStorage {
   }
 
   async getListingsByUser(userId: number): Promise<Listing[]> {
-    return Array.from(this.listings.values()).filter(
-      (listing) => listing.createdBy === userId
-    );
+    return Array.from(this.listings.values())
+      .filter(listing => listing.createdBy === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async getAcceptedListings(ngoId: number): Promise<Listing[]> {
-    return Array.from(this.listings.values()).filter(
-      (listing) => listing.acceptedBy === ngoId
-    );
+    return Array.from(this.listings.values())
+      .filter(listing => listing.acceptedBy === ngoId)
+      .sort((a, b) => b.acceptedAt!.getTime() - a.acceptedAt!.getTime());
+  }
+
+  async cleanExpiredListings(): Promise<void> {
+    const now = new Date();
+    for (const [id, listing] of this.listings) {
+      if (listing.status === "available" && listing.expiresAt < now) {
+        await this.updateListingStatus(id, "expired");
+      }
+    }
   }
 }
 

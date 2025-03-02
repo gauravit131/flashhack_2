@@ -10,9 +10,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   const ws = setupWebSocket(httpServer);
 
+  app.get("/api/users/count", async (req, res) => {
+    const count = await storage.getUserCount();
+    res.json({ count });
+  });
+
   app.get("/api/listings", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
-    const listings = await storage.getActiveListings();
+
+    const sortKey = req.query.sort as string;
+    const sortOrder = req.query.order as string;
+
+    const sort = sortKey && sortOrder ? { key: sortKey, order: sortOrder } : undefined;
+    const listings = await storage.getActiveListings(sort);
     res.json(listings);
   });
 
