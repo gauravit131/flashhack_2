@@ -3,11 +3,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertUserSchema, InsertUser } from "@shared/schema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Redirect } from "wouter";
 
 export default function AuthPage() {
@@ -40,7 +59,9 @@ export default function AuthPage() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Welcome to Food Share</CardTitle>
-            <CardDescription>Connect with local food donors and NGOs</CardDescription>
+            <CardDescription>
+              Connect with local food donors and NGOs
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">
@@ -51,7 +72,12 @@ export default function AuthPage() {
 
               <TabsContent value="login">
                 <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))} className="space-y-4">
+                  <form
+                    onSubmit={loginForm.handleSubmit((data) =>
+                      loginMutation.mutate(data),
+                    )}
+                    className="space-y-4"
+                  >
                     <FormField
                       control={loginForm.control}
                       name="username"
@@ -78,7 +104,11 @@ export default function AuthPage() {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={loginMutation.isPending}
+                    >
                       Login
                     </Button>
                   </form>
@@ -87,7 +117,12 @@ export default function AuthPage() {
 
               <TabsContent value="register">
                 <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit((data) => registerMutation.mutate(data))} className="space-y-4">
+                  <form
+                    onSubmit={registerForm.handleSubmit((data) =>
+                      registerMutation.mutate(data),
+                    )}
+                    className="space-y-4"
+                  >
                     <FormField
                       control={registerForm.control}
                       name="name"
@@ -133,7 +168,10 @@ export default function AuthPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Role</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select your role" />
@@ -148,7 +186,11 @@ export default function AuthPage() {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={registerMutation.isPending}
+                    >
                       Register
                     </Button>
                   </form>
@@ -162,11 +204,11 @@ export default function AuthPage() {
         <div className="max-w-2xl p-8">
           <h1 className="text-4xl font-bold mb-6">Share Food, Share Hope</h1>
           <p className="text-lg text-muted-foreground">
-            Join our platform to connect food donors with NGOs. Together, we can reduce food waste
-            and help those in need.
+            Join our platform to connect food donors with NGOs. Together, we can
+            reduce food waste and help those in need.
           </p>
           <img
-            src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601"
+            src="https://www.indianpolitics.co.in/wp-content/uploads/2022/07/Five-NGOs-Fighting-World-Hunger-scaled-1-2048x1366.jpg"
             alt="Food donation"
             className="mt-8 rounded-lg shadow-xl"
           />

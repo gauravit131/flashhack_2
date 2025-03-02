@@ -12,7 +12,11 @@ export default function HomePage() {
   const { user, logoutMutation } = useAuth();
 
   const { data: myListings } = useQuery<Listing[]>({
-    queryKey: [user?.role === "helper" ? "/api/listings/my-donations" : "/api/listings/accepted"],
+    queryKey: [
+      user?.role === "helper"
+        ? "/api/listings/my-donations"
+        : "/api/listings/accepted",
+    ],
     enabled: !!user,
   });
 
@@ -21,12 +25,7 @@ export default function HomePage() {
       <header className="border-b bg-muted/10">
         <div className="container py-8 flex flex-col items-center gap-4">
           <div className="flex items-center gap-2">
-            <h1 className="text-4xl font-bold text-primary">
-              Food Share
-            </h1>
-            <span className="px-2 py-1 text-xs font-medium bg-muted rounded-full">
-              Beta
-            </span>
+            <h1 className="text-4xl font-bold text-primary">Food Share</h1>
           </div>
           <div className="flex items-center gap-4">
             {user?.role === "helper" && (
@@ -44,11 +43,13 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="container py-16">
+      <main className="container py-16 flex justify-center items-center">
         <Tabs defaultValue="active" className="space-y-12">
           <TabsList className="w-full max-w-md mx-auto">
             <TabsTrigger value="active" className="flex-1">
-              {user?.role === "helper" ? "Available Donations" : "Available Food"}
+              {user?.role === "helper"
+                ? "Available Donations"
+                : "Available Food"}
             </TabsTrigger>
             <TabsTrigger value="history" className="flex-1">
               {user?.role === "helper" ? "My Donations" : "Accepted Food"}
@@ -58,7 +59,9 @@ export default function HomePage() {
           <TabsContent value="active">
             <div className="max-w-2xl mx-auto text-center mb-16">
               <h2 className="text-4xl font-bold text-primary mb-4">
-                {user?.role === "helper" ? "Available Donations" : "Available Food"}
+                {user?.role === "helper"
+                  ? "Available Donations"
+                  : "Available Food"}
               </h2>
               <p className="text-lg text-muted-foreground">
                 {user?.role === "helper"
@@ -88,7 +91,9 @@ export default function HomePage() {
                 <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
                   <div className="text-center space-y-2">
                     <p className="text-xl font-medium text-destructive">
-                      No {user?.role === "helper" ? "donations" : "accepted food"} found
+                      No{" "}
+                      {user?.role === "helper" ? "donations" : "accepted food"}{" "}
+                      found
                     </p>
                     <p className="text-muted-foreground">
                       {user?.role === "helper"

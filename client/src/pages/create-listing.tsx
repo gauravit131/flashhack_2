@@ -1,12 +1,31 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertListingSchema, InsertListing } from "@shared/schema";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
@@ -57,18 +76,25 @@ export default function CreateListing() {
   });
 
   return (
-    <div className="container max-w-2xl py-8">
+    <div className="container py-8 flex justify-center items-center">
       <Card className="border-2">
         <CardHeader>
           <div className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-primary" />
             <CardTitle>Create Food Listing</CardTitle>
           </div>
-          <CardDescription>Share details about the food you want to donate</CardDescription>
+          <CardDescription>
+            Share details about the food you want to donate
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => createMutation.mutate(data))} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit((data) =>
+                createMutation.mutate(data),
+              )}
+              className="space-y-6"
+            >
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -77,7 +103,10 @@ export default function CreateListing() {
                     <FormItem>
                       <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="e.g., Fresh Vegetables from Local Market" />
+                        <Input
+                          {...field}
+                          placeholder="e.g., Fresh Vegetables from Local Market"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -108,7 +137,10 @@ export default function CreateListing() {
                       <FormItem>
                         <FormLabel>Quantity</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g., 5 kg or 20 meals" />
+                          <Input
+                            {...field}
+                            placeholder="e.g., 5 kg or 20 meals"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -121,7 +153,11 @@ export default function CreateListing() {
                       <FormItem>
                         <FormLabel>Mobile Number</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter 10-digit mobile number" maxLength={10} />
+                          <Input
+                            {...field}
+                            placeholder="Enter 10-digit mobile number"
+                            maxLength={10}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -131,7 +167,9 @@ export default function CreateListing() {
               </div>
 
               <div className="border rounded-lg p-4 space-y-4">
-                <h3 className="font-medium text-sm text-muted-foreground">Pickup Location</h3>
+                <h3 className="font-medium text-sm text-muted-foreground">
+                  Pickup Location
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -140,7 +178,10 @@ export default function CreateListing() {
                       <FormItem>
                         <FormLabel>Locality/Area</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter locality or area" />
+                          <Input
+                            {...field}
+                            placeholder="Enter locality or area"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -189,15 +230,22 @@ export default function CreateListing() {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder={selectedState ? "Select city" : "Select state first"} />
+                              <SelectValue
+                                placeholder={
+                                  selectedState
+                                    ? "Select city"
+                                    : "Select state first"
+                                }
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {selectedState && stateCities[selectedState]?.map((city) => (
-                              <SelectItem key={city} value={city}>
-                                {city}
-                              </SelectItem>
-                            ))}
+                            {selectedState &&
+                              stateCities[selectedState]?.map((city) => (
+                                <SelectItem key={city} value={city}>
+                                  {city}
+                                </SelectItem>
+                              ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -211,7 +259,11 @@ export default function CreateListing() {
                       <FormItem>
                         <FormLabel>Pincode</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter 6-digit pincode" maxLength={6} />
+                          <Input
+                            {...field}
+                            placeholder="Enter 6-digit pincode"
+                            maxLength={6}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -220,7 +272,11 @@ export default function CreateListing() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={createMutation.isPending}
+              >
                 Create Listing
               </Button>
             </form>
