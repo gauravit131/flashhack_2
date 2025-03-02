@@ -20,10 +20,12 @@ export const listings = pgTable("listings", {
   state: text("state").notNull(),
   pincode: text("pincode").notNull(),
   createdBy: integer("created_by").notNull(),
+  creatorName: text("creator_name").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   expiresAt: timestamp("expires_at").notNull(),
   status: text("status", { enum: ["available", "accepted", "expired"] }).notNull(),
   acceptedBy: integer("accepted_by"),
+  acceptorName: text("acceptor_name"),
   acceptedAt: timestamp("accepted_at"),
 });
 
@@ -42,6 +44,8 @@ export const insertListingSchema = createInsertSchema(listings).pick({
   city: true,
   state: true,
   pincode: true,
+  createdBy: true,
+  creatorName: true
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

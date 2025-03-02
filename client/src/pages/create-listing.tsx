@@ -6,13 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { MapPin } from "lucide-react";
+import { indianStates, stateCities } from "@/lib/india-states";
+import { useState } from "react";
 
 export default function CreateListing() {
   const [, setLocation] = useLocation();
+  const [selectedState, setSelectedState] = useState<string>("");
 
   const form = useForm<InsertListing>({
     resolver: zodResolver(insertListingSchema),
@@ -115,26 +119,58 @@ export default function CreateListing() {
                   />
                   <FormField
                     control={form.control}
-                    name="city"
+                    name="state"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Enter city name" />
-                        </FormControl>
+                        <FormLabel>State</FormLabel>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            setSelectedState(value);
+                            // Reset city when state changes
+                            form.setValue("city", "");
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select state" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {indianStates.map((state) => (
+                              <SelectItem key={state} value={state}>
+                                {state}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <FormField
                     control={form.control}
-                    name="state"
+                    name="city"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>State</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Enter state name" />
-                        </FormControl>
+                        <FormLabel>City</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          disabled={!selectedState}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder={selectedState ? "Select city" : "Select state first"} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {selectedState && stateCities[selectedState]?.map((city) => (
+                              <SelectItem key={city} value={city}>
+                                {city}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

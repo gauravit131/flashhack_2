@@ -20,6 +20,7 @@ export interface IStorage {
   getListingsByUser(userId: number): Promise<Listing[]>;
   getAcceptedListings(ngoId: number): Promise<Listing[]>;
   cleanExpiredListings(): Promise<void>;
+  getUserById(id: number): Promise<User | undefined>;
   sessionStore: session.Store;
 }
 
@@ -64,9 +65,15 @@ export class MemStorage implements IStorage {
     return this.users.size;
   }
 
+  async getUserById(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
   async createListing(listing: InsertListing & { createdBy: number }): Promise<Listing> {
     const id = this.currentListingId++;
     const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
+    const creator = await this.getUserById(listing.createdBy);
+
     const newListing: Listing = {
       ...listing,
       id,
@@ -75,6 +82,8 @@ export class MemStorage implements IStorage {
       expiresAt,
       acceptedBy: null,
       acceptedAt: null,
+      creatorName: creator?.name || "Unknown",
+      acceptorName: null,
     };
     this.listings.set(id, newListing);
     return newListing;
@@ -109,11 +118,14 @@ export class MemStorage implements IStorage {
     const listing = this.listings.get(id);
     if (!listing || listing.status !== "available") return undefined;
 
+    const acceptor = await this.getUserById(acceptedBy);
+
     const updatedListing: Listing = {
       ...listing,
       status: "accepted",
       acceptedBy,
       acceptedAt: new Date(),
+      acceptorName: acceptor?.name || "Unknown",
     };
     this.listings.set(id, updatedListing);
     return updatedListing;
