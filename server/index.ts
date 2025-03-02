@@ -34,7 +34,9 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
+    const startTime = Date.now();
     log("Starting server initialization...");
+
     const server = await registerRoutes(app);
 
     // Error handling middleware
@@ -50,7 +52,11 @@ app.use((req, res, next) => {
     await setupVite(app, server);
 
     const port = Number(process.env.PORT || 5000);
+    log(`Attempting to start server on port ${port}...`);
+
     server.listen(port, () => {
+      const duration = Date.now() - startTime;
+      log(`Server started successfully in ${duration}ms`);
       log(`Server running at http://localhost:${port}`);
     });
   } catch (err) {
