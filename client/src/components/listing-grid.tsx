@@ -14,8 +14,8 @@ export function ListingGrid() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[200px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex justify-center items-center min-h-[300px]">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
@@ -25,21 +25,32 @@ export function ListingGrid() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="relative">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        <Input 
-          placeholder="Search by city..." 
-          value={cityFilter}
-          onChange={(e) => setCityFilter(e.target.value)}
-          className="pl-9"
-        />
+    <div className="space-y-8">
+      <div className="max-w-md mx-auto">
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search by city..." 
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            className="pl-9 bg-muted/30 border-2 focus-visible:ring-primary"
+          />
+        </div>
       </div>
 
       {!filteredListings?.length ? (
-        <div className="text-center text-muted-foreground py-8">
-          No active listings available
-          {cityFilter && " for this city"}
+        <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="text-center space-y-2">
+            <p className="text-lg font-medium text-muted-foreground">
+              No active listings available
+              {cityFilter && " for this city"}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {cityFilter 
+                ? "Try searching for a different city"
+                : "Check back later for new donations"}
+            </p>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
