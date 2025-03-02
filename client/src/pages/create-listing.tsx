@@ -13,10 +13,12 @@ import { useLocation } from "wouter";
 import { MapPin } from "lucide-react";
 import { indianStates, stateCities } from "@/lib/india-states";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CreateListing() {
   const [, setLocation] = useLocation();
   const [selectedState, setSelectedState] = useState<string>("");
+  const { toast } = useToast();
 
   const form = useForm<InsertListing>({
     resolver: zodResolver(insertListingSchema),
@@ -24,6 +26,7 @@ export default function CreateListing() {
       title: "",
       description: "",
       quantity: "",
+      mobileNumber: "",
       locality: "",
       city: "",
       state: "",
@@ -38,7 +41,18 @@ export default function CreateListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/listings"] });
+      toast({
+        title: "Success",
+        description: "Food listing created successfully",
+      });
       setLocation("/");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -86,19 +100,34 @@ export default function CreateListing() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Quantity</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="e.g., 5 kg or 20 meals" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Quantity</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g., 5 kg or 20 meals" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="mobileNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mobile Number</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter 10-digit mobile number" maxLength={10} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
               <div className="border rounded-lg p-4 space-y-4">
@@ -182,7 +211,7 @@ export default function CreateListing() {
                       <FormItem>
                         <FormLabel>Pincode</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter 6-digit pincode" />
+                          <Input {...field} placeholder="Enter 6-digit pincode" maxLength={6} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

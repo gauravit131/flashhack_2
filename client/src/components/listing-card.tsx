@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { format, formatDistanceToNow } from "date-fns";
 import { Badge } from "./ui/badge";
-import { MapPin, Clock, Calendar } from "lucide-react";
+import { MapPin, Clock, Calendar, Phone, User } from "lucide-react";
 
 export function ListingCard({ listing }: { listing: Listing }) {
   const { user } = useAuth();
@@ -66,10 +66,25 @@ export function ListingCard({ listing }: { listing: Listing }) {
                 <span>Expired</span>
               )}
             </div>
+            {(user?.role === "ngo" || listing.acceptedBy === user?.id) && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Phone className="h-4 w-4" />
+                <span>{listing.mobileNumber}</span>
+              </div>
+            )}
           </div>
 
           <div className="pt-2 border-t">
             <p className="font-medium">Quantity: {listing.quantity}</p>
+            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+              <User className="h-4 w-4" />
+              <div>
+                <p>Posted by: {listing.creatorName}</p>
+                {listing.status === "accepted" && (
+                  <p>Accepted by: {listing.acceptorName}</p>
+                )}
+              </div>
+            </div>
             <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               <div>

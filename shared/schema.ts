@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -15,6 +15,7 @@ export const listings = pgTable("listings", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   quantity: text("quantity").notNull(),
+  mobileNumber: text("mobile_number").notNull(),
   locality: text("locality").notNull(),
   city: text("city").notNull(),
   state: text("state").notNull(),
@@ -36,17 +37,21 @@ export const insertUserSchema = createInsertSchema(users).pick({
   name: true,
 });
 
-export const insertListingSchema = createInsertSchema(listings).pick({
-  title: true,
-  description: true,
-  quantity: true,
-  locality: true,
-  city: true,
-  state: true,
-  pincode: true,
-  createdBy: true,
-  creatorName: true
-});
+export const insertListingSchema = createInsertSchema(listings)
+  .pick({
+    title: true,
+    description: true,
+    quantity: true,
+    mobileNumber: true,
+    locality: true,
+    city: true,
+    state: true,
+    pincode: true,
+  })
+  .extend({
+    mobileNumber: z.string().regex(/^\d{10}$/, "Mobile number must be 10 digits"),
+    pincode: z.string().regex(/^\d{6}$/, "Pincode must be 6 digits"),
+  });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
