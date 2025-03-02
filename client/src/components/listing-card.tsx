@@ -28,7 +28,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
     : null;
 
   return (
-    <Card className="border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+    <Card className="border-2 hover:border-[#98DDCA] transition-all duration-300 hover:shadow-lg">
       <CardHeader>
         <div className="flex justify-between items-start gap-4">
           <div className="space-y-1">
@@ -36,14 +36,13 @@ export function ListingCard({ listing }: { listing: Listing }) {
             <CardDescription className="line-clamp-2">{listing.description}</CardDescription>
           </div>
           <Badge 
-            variant={
+            className={`capitalize px-3 py-1 ${
               listing.status === "available" 
-                ? "default" 
+                ? "bg-[#98DDCA] hover:bg-[#98DDCA]/90" 
                 : listing.status === "accepted" 
-                ? "success" 
-                : "secondary"
-            }
-            className="capitalize px-3 py-1"
+                ? "bg-[#89BBFE] hover:bg-[#89BBFE]/90" 
+                : "bg-gray-200 hover:bg-gray-200/90"
+            }`}
           >
             {listing.status}
           </Badge>
@@ -51,32 +50,32 @@ export function ListingCard({ listing }: { listing: Listing }) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="space-y-3 bg-muted/30 rounded-lg p-3">
-            <div className="flex items-start gap-2 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4 mt-1 text-primary" />
+          <div className="space-y-3 bg-[#98DDCA]/5 rounded-lg p-4">
+            <div className="flex items-start gap-2 text-sm">
+              <MapPin className="h-4 w-4 mt-1 text-[#98DDCA]" />
               <div className="space-y-1">
                 <p>{listing.locality}, {listing.city}</p>
                 <p>{listing.state} - {listing.pincode}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-primary" />
-              <span className={listing.status === "available" ? "text-primary font-medium" : "text-muted-foreground"}>
+              <Clock className="h-4 w-4 text-[#98DDCA]" />
+              <span className={listing.status === "available" ? "text-[#FF8C8C] font-medium" : ""}>
                 {listing.status === "available" ? `Expires ${timeLeft}` : "Expired"}
               </span>
             </div>
             {(user?.role === "ngo" || listing.acceptedBy === user?.id) && (
               <div className="flex items-center gap-2 text-sm">
-                <Phone className="h-4 w-4 text-primary" />
+                <Phone className="h-4 w-4 text-[#98DDCA]" />
                 <span className="font-medium">{listing.mobileNumber}</span>
               </div>
             )}
           </div>
 
-          <div className="pt-3 border-t space-y-3">
-            <p className="font-medium text-lg">Quantity: {listing.quantity}</p>
+          <div className="pt-4 border-t space-y-3">
+            <p className="text-lg font-medium">Quantity: {listing.quantity}</p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4 text-primary" />
+              <User className="h-4 w-4 text-[#89BBFE]" />
               <div>
                 <p>Posted by: <span className="font-medium">{listing.creatorName}</span></p>
                 {listing.status === "accepted" && (
@@ -85,7 +84,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4 text-primary" />
+              <Calendar className="h-4 w-4 text-[#89BBFE]" />
               <div>
                 {listing.status === "accepted" ? (
                   <>
@@ -103,7 +102,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
       {user?.role === "ngo" && listing.status === "available" && (
         <CardFooter>
           <Button
-            className="w-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+            className="w-full bg-[#89BBFE] hover:bg-[#89BBFE]/90 text-white shadow-lg hover:shadow-xl transition-all"
             onClick={() => acceptMutation.mutate()}
             disabled={acceptMutation.isPending}
           >
