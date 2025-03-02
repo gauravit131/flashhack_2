@@ -53,5 +53,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(updatedListing);
   });
 
+  app.get("/api/listings/my-donations", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    if (req.user.role !== "helper") return res.sendStatus(403);
+
+    const listings = await storage.getListingsByUser(req.user.id);
+    res.json(listings);
+  });
+
+  app.get("/api/listings/accepted", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    if (req.user.role !== "ngo") return res.sendStatus(403);
+
+    const listings = await storage.getAcceptedListings(req.user.id);
+    res.json(listings);
+  });
+
   return httpServer;
 }

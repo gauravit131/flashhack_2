@@ -8,13 +8,13 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
   createListing(listing: InsertListing & { createdBy: number }): Promise<Listing>;
   getListing(id: number): Promise<Listing | undefined>;
   getActiveListings(): Promise<Listing[]>;
   acceptListing(id: number, acceptedBy: number): Promise<Listing | undefined>;
   updateListingStatus(id: number, status: "expired"): Promise<void>;
-  
+  getListingsByUser(userId: number): Promise<Listing[]>;
+  getAcceptedListings(ngoId: number): Promise<Listing[]>;
   sessionStore: session.Store;
 }
 
@@ -80,7 +80,7 @@ export class MemStorage implements IStorage {
   async acceptListing(id: number, acceptedBy: number): Promise<Listing | undefined> {
     const listing = this.listings.get(id);
     if (!listing || listing.status !== "available") return undefined;
-    
+
     const updatedListing: Listing = {
       ...listing,
       status: "accepted",
@@ -95,6 +95,18 @@ export class MemStorage implements IStorage {
     if (listing) {
       this.listings.set(id, { ...listing, status });
     }
+  }
+
+  async getListingsByUser(userId: number): Promise<Listing[]> {
+    return Array.from(this.listings.values()).filter(
+      (listing) => listing.createdBy === userId
+    );
+  }
+
+  async getAcceptedListings(ngoId: number): Promise<Listing[]> {
+    return Array.from(this.listings.values()).filter(
+      (listing) => listing.acceptedBy === ngoId
+    );
   }
 }
 
