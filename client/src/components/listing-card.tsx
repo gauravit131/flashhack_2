@@ -28,45 +28,37 @@ export function ListingCard({ listing }: { listing: Listing }) {
     : null;
 
   return (
-    <Card className="border-2 hover:border-[#98DDCA] transition-all duration-300 hover:shadow-lg">
+    <Card className="border-2 hover:border-primary transition-all duration-300 hover:shadow-lg">
       <CardHeader>
         <div className="flex justify-between items-start gap-4">
           <div className="space-y-1">
             <CardTitle className="text-xl font-bold">{listing.title}</CardTitle>
             <CardDescription className="line-clamp-2">{listing.description}</CardDescription>
           </div>
-          <Badge 
-            className={`capitalize px-3 py-1 ${
-              listing.status === "available" 
-                ? "bg-[#98DDCA] hover:bg-[#98DDCA]/90" 
-                : listing.status === "accepted" 
-                ? "bg-[#89BBFE] hover:bg-[#89BBFE]/90" 
-                : "bg-gray-200 hover:bg-gray-200/90"
-            }`}
-          >
+          <Badge variant={listing.status === "available" ? "default" : "secondary"}>
             {listing.status}
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="space-y-3 bg-[#98DDCA]/5 rounded-lg p-4">
+          <div className="space-y-3 bg-muted rounded-lg p-4">
             <div className="flex items-start gap-2 text-sm">
-              <MapPin className="h-4 w-4 mt-1 text-[#98DDCA]" />
+              <MapPin className="h-4 w-4 mt-1 text-primary" />
               <div className="space-y-1">
                 <p>{listing.locality}, {listing.city}</p>
                 <p>{listing.state} - {listing.pincode}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-[#98DDCA]" />
-              <span className={listing.status === "available" ? "text-[#FF8C8C] font-medium" : ""}>
+              <Clock className="h-4 w-4 text-primary" />
+              <span className={listing.status === "available" ? "text-destructive font-medium" : ""}>
                 {listing.status === "available" ? `Expires ${timeLeft}` : "Expired"}
               </span>
             </div>
             {(user?.role === "ngo" || listing.acceptedBy === user?.id) && (
               <div className="flex items-center gap-2 text-sm">
-                <Phone className="h-4 w-4 text-[#98DDCA]" />
+                <Phone className="h-4 w-4 text-primary" />
                 <span className="font-medium">{listing.mobileNumber}</span>
               </div>
             )}
@@ -75,7 +67,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           <div className="pt-4 border-t space-y-3">
             <p className="text-lg font-medium">Quantity: {listing.quantity}</p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4 text-[#89BBFE]" />
+              <User className="h-4 w-4 text-primary" />
               <div>
                 <p>Posted by: <span className="font-medium">{listing.creatorName}</span></p>
                 {listing.status === "accepted" && (
@@ -84,7 +76,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4 text-[#89BBFE]" />
+              <Calendar className="h-4 w-4 text-primary" />
               <div>
                 {listing.status === "accepted" ? (
                   <>
@@ -102,7 +94,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
       {user?.role === "ngo" && listing.status === "available" && (
         <CardFooter>
           <Button
-            className="w-full bg-[#89BBFE] hover:bg-[#89BBFE]/90 text-white shadow-lg hover:shadow-xl transition-all"
+            className="w-full shadow-lg hover:shadow-xl transition-all"
             onClick={() => acceptMutation.mutate()}
             disabled={acceptMutation.isPending}
           >

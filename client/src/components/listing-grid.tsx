@@ -15,7 +15,7 @@ export function ListingGrid() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[300px]">
-        <Loader2 className="h-12 w-12 animate-spin text-[#98DDCA]" />
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
@@ -28,12 +28,12 @@ export function ListingGrid() {
     <div className="space-y-8 max-w-7xl mx-auto">
       <div className="max-w-md mx-auto">
         <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-[#89BBFE]" />
+          <Search className="absolute left-3 top-3 h-4 w-4 text-primary" />
           <Input 
             placeholder="Search by city..." 
             value={cityFilter}
             onChange={(e) => setCityFilter(e.target.value)}
-            className="pl-9 bg-[#98DDCA]/5 border-2 border-[#98DDCA]/20 focus-visible:ring-[#98DDCA] focus-visible:border-[#98DDCA]"
+            className="pl-9 bg-muted border-2 focus-visible:ring-primary focus-visible:border-primary"
           />
         </div>
       </div>
@@ -41,7 +41,7 @@ export function ListingGrid() {
       {!filteredListings?.length ? (
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="text-center space-y-2">
-            <p className="text-xl font-medium text-[#FF8C8C]">
+            <p className="text-xl font-medium text-destructive">
               No active listings available
               {cityFilter && " for this city"}
             </p>
