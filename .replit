@@ -14,7 +14,7 @@ run = ["npm", "run", "start"]
 localPort = 5000
 
 [workflows]
-runButton = "Project"
+runButton = "Run"
 
 [[workflows.workflow]]
 name = "Project"
@@ -39,3 +39,11 @@ task = "packager.installForAll"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Run"
+author = 40139760
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
